@@ -1,9 +1,5 @@
 package com.xsn.tiktok.limitation;
 
-import com.xsn.tiktok.invocation.specific.Worker;
-import com.xsn.tiktok.manager.ManagerRegister;
-import com.xsn.tiktok.strategy.Strategy;
-import com.xsn.tiktok.manager.Manager;
 import com.xsn.tiktok.strategy.StrategyRegister;
 
 /**
@@ -14,7 +10,7 @@ import com.xsn.tiktok.strategy.StrategyRegister;
  * 自身条件的限制
  * 等等
  */
-public interface Limitation extends StrategyRegister, ManagerRegister {
+public interface Limitation extends StrategyRegister {
 
     /**
      * 是否超出了限制

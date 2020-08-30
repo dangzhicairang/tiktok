@@ -2,7 +2,6 @@ package com.xsn.tiktok.invocation.whole;
 
 import com.xsn.tiktok.invocation.Invocation;
 import com.xsn.tiktok.limitation.Limitation;
-import com.xsn.tiktok.manager.Manager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,8 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 public abstract class AbstractTiktokPlayer implements Invocation {
-
-    private List<Manager> managerList;
 
     private List<Limitation> limitations;
 

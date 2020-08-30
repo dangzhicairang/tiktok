@@ -1,14 +1,13 @@
 package com.xsn.tiktok.strategy;
 
 import com.xsn.tiktok.limitation.Limitation;
-import com.xsn.tiktok.manager.Manager;
 import com.xsn.tiktok.support.Time;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class TimeStrategy implements Strategy, Time {
 
-    private Limitation limitation;
+    private volatile Limitation limitation;
 
     private ThreadLocal<Integer> maxLimits;
 
@@ -67,19 +66,4 @@ public class TimeStrategy implements Strategy, Time {
         this.limitation = limitation;
     }
 
-
-    @Override
-    public void addManager(Manager manager) {
-
-    }
-
-    @Override
-    public void removeManager(Manager manager) {
-
-    }
-
-    @Override
-    public void changeManager(Manager manager) {
-
-    }
 }

@@ -1,6 +1,5 @@
 package com.xsn.tiktok.limitation;
 
-import com.xsn.tiktok.manager.Manager;
 import com.xsn.tiktok.strategy.Strategy;
 import com.xsn.tiktok.support.Time;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +10,7 @@ import java.util.List;
 @Slf4j
 public class TimeLimitation implements Limitation, Time {
 
-    private List<Strategy> strategyList;
-
-    private volatile Manager manager;
+    private volatile Strategy strategy;
 
     private static final Object MANAGER_MUTEX = new Object();
 
@@ -32,51 +29,45 @@ public class TimeLimitation implements Limitation, Time {
 
     @Override
     public boolean canStop() {
-        return false;
-    }
 
-    @Override
-    public void addManager(Manager manager) {
-        if (this.manager == null) {
-            synchronized (MANAGER_MUTEX) {
-                if (this.manager == null) {
-                    this.manager = manager;
-                } else {
-                    log.warn("already has a manager");
-                }
-            }
-        } else {
-            log.warn("already has a manager");
+        if (strategy == null) {
+            return true;
         }
-    }
 
-    @Override
-    public void removeManager(Manager manager) {
-        if (this.manager != null) {
-            synchronized (MANAGER_MUTEX) {
-                if (this.manager != null) {
-                    this.manager = null;
-                }
-            }
+        if (strategy.match() && strategy.canHandle()) {
+            strategy.handle();
+            return false;
         }
+
+        return true;
     }
 
-    @Override
-    public void changeManager(Manager manager) {
-        this.manager = manager;
-    }
 
     @Override
     public void addStrategy(Strategy strategy) {
-        synchronized (STRATEGY_MUTEX) {
-            strategyList.add(strategy);
+        if (this.strategy == null) {
+            synchronized (STRATEGY_MUTEX) {
+                if (this.strategy == null && strategy != null) {
+                    strategy.changeLimitation(this);
+                    this.strategy = strategy;
+                } else {
+                    log.warn("already has a strategy");
+                }
+            }
+        } else {
+            log.warn("already has a strategy");
         }
     }
 
     @Override
     public void removeStrategy(Strategy strategy) {
-        synchronized (STRATEGY_MUTEX) {
-            strategyList.remove(strategy);
+        if (this.strategy != null) {
+            synchronized (STRATEGY_MUTEX) {
+                if (this.strategy != null && strategy != null) {
+                    strategy.removeLimitation(this);
+                    this.strategy = null;
+                }
+            }
         }
     }
 }
