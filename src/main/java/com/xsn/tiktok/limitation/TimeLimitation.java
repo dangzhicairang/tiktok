@@ -8,6 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * 只许刷 overSeconds 秒
+ * 多了不行！
+ * 除非 {@link Strategy} 同意
+ */
 @Slf4j
 public class TimeLimitation implements Limitation, Time {
 
@@ -114,6 +119,11 @@ public class TimeLimitation implements Limitation, Time {
         return isStop;
     }
 
+    /**
+     * 激烈的思想斗争
+     * 如果想做个自制力强大的人
+     * 请 setStrategy(null) 或 setStrategy(new NoWayStrategy(this))
+     */
     @Override
     public void tryStop() {
 

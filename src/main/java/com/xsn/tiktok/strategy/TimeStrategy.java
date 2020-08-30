@@ -8,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * 允许延时 timeLimitation.getAllOverTimes 次
+ * 每次延时 interval 秒
+ */
 @Slf4j
 public class TimeStrategy implements Strategy, Time {
 
