@@ -1,4 +1,4 @@
-package com.xsn.tiktok.invocation.specific;
+package com.xsn.tiktok.invocation;
 
 import com.xsn.tiktok.invocation.Invocation;
 

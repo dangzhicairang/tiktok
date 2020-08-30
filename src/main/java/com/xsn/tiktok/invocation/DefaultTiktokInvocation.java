@@ -1,19 +1,19 @@
-package com.xsn.tiktok.invocation.whole;
+package com.xsn.tiktok.invocation;
 
 import com.xsn.tiktok.limitation.Limitation;
 import com.xsn.tiktok.support.Time;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class DefaultTiktokInvocation extends AbstractTiktokInvocation implements Time {
 
     private static final Object MUTEX = new Object();
 
-    private Runnable runnable;
-
-    private final Thread intervalThread = new Thread(runnable);
+    private Thread intervalThread;
 
     private long interval;
 
@@ -26,7 +26,6 @@ public class DefaultTiktokInvocation extends AbstractTiktokInvocation implements
     }
 
     public DefaultTiktokInvocation(List<Limitation> limitations, long interval) {
-        assert limitations != null && interval > 10;
         this.limitations = limitations;
         this.interval = interval;
     }
@@ -51,7 +50,14 @@ public class DefaultTiktokInvocation extends AbstractTiktokInvocation implements
 
     @Override
     public void prepare() {
-        runnable = () -> {
+        intervalThread = new Thread(() -> {
+
+            for (Limitation limitation : limitations) {
+                if (limitation instanceof Time) {
+                    limitation.start();
+                }
+            }
+
             while(true) {
                 try {
                     TimeUnit.SECONDS.sleep(interval);
@@ -64,13 +70,12 @@ public class DefaultTiktokInvocation extends AbstractTiktokInvocation implements
                     }
                 }
             }
-        };
+        });
     }
 
     @Override
     protected void play() throws InterruptedException {
         intervalThread.start();
-        intervalThread.join();
         super.play();
 
     }
@@ -78,5 +83,6 @@ public class DefaultTiktokInvocation extends AbstractTiktokInvocation implements
     @Override
     public void stop() {
         intervalThread.interrupt();
+        log.info("stop play, go to sleep");
     }
 }

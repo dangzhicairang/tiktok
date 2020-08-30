@@ -1,6 +1,6 @@
 package com.xsn.tiktok.limitation;
 
-import com.xsn.tiktok.invocation.specific.Worker;
+import com.xsn.tiktok.invocation.Worker;
 import com.xsn.tiktok.strategy.Strategy;
 import com.xsn.tiktok.support.Time;
 import lombok.extern.slf4j.Slf4j;
@@ -27,17 +27,14 @@ public class TimeLimitation implements Limitation, Time {
 
     private boolean isStop = true;
 
-    public TimeLimitation(Strategy strategy, Worker worker) {
-        this(strategy, worker, 1800, 3);
+    public TimeLimitation() {
+        this(800, 3);
     }
 
-    public TimeLimitation(Strategy strategy, Worker worker,
-                          int overSeconds, int allOverTimes) {
+    public TimeLimitation(int overSeconds, int allOverTimes) {
 
-        assert strategy == null || worker == null;
+        assert strategy == null;
 
-        this.strategy = strategy;
-        this.worker = worker;
         this.overSeconds = overSeconds;
         this.allOverTimes = allOverTimes;
     }
@@ -72,6 +69,23 @@ public class TimeLimitation implements Limitation, Time {
 
     public void setAllOverTimes(int allOverTimes) {
         this.allOverTimes = allOverTimes;
+    }
+
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    @Override
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
     }
 
     @Override
@@ -119,6 +133,7 @@ public class TimeLimitation implements Limitation, Time {
         }
 
         if (strategy.canHandle()) {
+            log.info("over time, but handle");
             strategy.handle(this);
             return;
         }

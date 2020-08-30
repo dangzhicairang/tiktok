@@ -1,7 +1,6 @@
-package com.xsn.tiktok.invocation.whole;
+package com.xsn.tiktok.invocation;
 
 import com.xsn.tiktok.invocation.Invocation;
-import com.xsn.tiktok.invocation.specific.DefaultWorker;
 import com.xsn.tiktok.limitation.Limitation;
 import lombok.Getter;
 import lombok.Setter;

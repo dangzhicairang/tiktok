@@ -1,6 +1,5 @@
-package com.xsn.tiktok.invocation.specific;
+package com.xsn.tiktok.invocation;
 
-import com.xsn.tiktok.invocation.whole.AbstractTiktokInvocation;
 import com.xsn.tiktok.limitation.Limitation;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,13 +11,13 @@ import java.util.concurrent.TimeUnit;
 @Setter
 @Getter
 @Slf4j
-public class DefaultWorker implements Worker {
+class DefaultWorker implements Worker {
 
     private AbstractTiktokInvocation abstractTiktokInvocation;
 
     private List<Limitation> limitations;
 
-    private boolean flag;
+    private boolean flag = true;
 
     public DefaultWorker(AbstractTiktokInvocation abstractTiktokInvocation) {
         assert abstractTiktokInvocation != null
@@ -26,6 +25,10 @@ public class DefaultWorker implements Worker {
 
         this.abstractTiktokInvocation = abstractTiktokInvocation;
         this.limitations = abstractTiktokInvocation.getLimitations();
+
+        if (limitations.size() > 0) {
+            limitations.stream().forEach(e -> e.setWorker(this));
+        }
     }
 
     @Override
