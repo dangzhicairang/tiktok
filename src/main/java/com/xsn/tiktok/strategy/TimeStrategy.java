@@ -1,37 +1,51 @@
 package com.xsn.tiktok.strategy;
 
 import com.xsn.tiktok.limitation.Limitation;
+import com.xsn.tiktok.limitation.TimeLimitation;
 import com.xsn.tiktok.support.Time;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Calendar;
+import java.util.Date;
 
 @Slf4j
 public class TimeStrategy implements Strategy, Time {
 
-    private volatile Limitation limitation;
+    private TimeLimitation timeLimitation;
 
-    private ThreadLocal<Integer> maxLimits;
+    private int interval;
 
-    private ThreadLocal<Integer> currentTimes;
+    public TimeStrategy(TimeLimitation timeLimitation) {
+        this(timeLimitation, 1800);
+    }
 
-    private static final Object MUTEX = new Object();
+    public TimeStrategy(TimeLimitation timeLimitation, int interval) {
+        assert timeLimitation != null && interval > 0;
 
-    @Override
-    public boolean match() {
-        return limitation instanceof Time;
+        this.timeLimitation = timeLimitation;
+        this.interval = interval;
     }
 
     @Override
     public boolean canHandle() {
-        return maxLimits.get() > 0 && currentTimes.get() < maxLimits.get();
+
+        return timeLimitation != null
+                && !timeLimitation.isStop()
+                && timeLimitation.isOver()
+                && timeLimitation.getAllOverTimes() > timeLimitation.getCurrentOverTimes();
     }
 
     @Override
-    public boolean handle() {
-        return false;
+    public void handle(Limitation limitation) {
+        Date end = timeLimitation.getEnd();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(end);
+        calendar.add(Calendar.SECOND, interval);
+        end = calendar.getTime();
+
+        timeLimitation.setEnd(end);
+        timeLimitation.setCurrentOverTimes(timeLimitation.getCurrentOverTimes() + 1);
     }
 
-    @Override
-    public void invoke() {
-
-    }
 }

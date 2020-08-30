@@ -1,32 +1,41 @@
 package com.xsn.tiktok.invocation.specific;
 
-import com.xsn.tiktok.invocation.whole.AbstractTiktokPlayer;
+import com.xsn.tiktok.invocation.whole.AbstractTiktokInvocation;
 import com.xsn.tiktok.limitation.Limitation;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Setter
 @Getter
 @Slf4j
 public class DefaultWorker implements Worker {
 
-    private AbstractTiktokPlayer abstractTiktokPlayer;
+    private AbstractTiktokInvocation abstractTiktokInvocation;
 
     private List<Limitation> limitations;
 
-    private ThreadLocal<Boolean> flagHolder;
+    private boolean flag;
 
-    private static final Object LIMITATION_MUTEX = new Object();
+    public DefaultWorker(AbstractTiktokInvocation abstractTiktokInvocation) {
+        assert abstractTiktokInvocation != null
+                && abstractTiktokInvocation.getLimitations() != null;
 
+        this.abstractTiktokInvocation = abstractTiktokInvocation;
+        this.limitations = abstractTiktokInvocation.getLimitations();
+    }
 
     @Override
-    public void invoke() {
-        while (flagHolder.get()) {
+    public void invoke() throws InterruptedException {
+        while (flag) {
             play();
+            TimeUnit.SECONDS.sleep(5);
         }
+
+        abstractTiktokInvocation.stop();
     }
 
     protected void play() {
@@ -34,7 +43,7 @@ public class DefaultWorker implements Worker {
     }
 
     @Override
-    public boolean canStop() {
-        return false;
+    public void stop() {
+        flag = false;
     }
 }
