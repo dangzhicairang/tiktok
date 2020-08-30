@@ -34,25 +34,6 @@ public class DefaultWorker implements Worker {
     }
 
     @Override
-    public void addLimitation(Limitation limitation) {
-        synchronized (LIMITATION_MUTEX) {
-            limitations.add(limitation);
-        }
-    }
-
-    @Override
-    public void removeLimitation(Limitation limitation) {
-        synchronized (LIMITATION_MUTEX) {
-            limitations.remove(limitation);
-        }
-    }
-
-    @Override
-    public void changeLimitation(Limitation limitation) {
-
-    }
-
-    @Override
     public boolean canStop() {
         return false;
     }

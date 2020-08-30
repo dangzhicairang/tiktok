@@ -34,36 +34,4 @@ public class TimeStrategy implements Strategy, Time {
     public void invoke() {
 
     }
-
-    @Override
-    public void addLimitation(Limitation limitation) {
-        if (this.limitation == null) {
-            synchronized (MUTEX) {
-                if (this.limitation == null) {
-                    this.limitation = limitation;
-                } else {
-                    log.warn("already has a limitation");
-                }
-            }
-        } else {
-            log.warn("already has a limitation");
-        }
-    }
-
-    @Override
-    public void removeLimitation(Limitation limitation) {
-        if (this.limitation != null) {
-            synchronized (MUTEX) {
-                if (this.limitation != null) {
-                    this.limitation = null;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void changeLimitation(Limitation limitation) {
-        this.limitation = limitation;
-    }
-
 }

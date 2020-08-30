@@ -1,7 +1,5 @@
 package com.xsn.tiktok.limitation;
 
-import com.xsn.tiktok.strategy.StrategyRegister;
-
 /**
  * 各种限制因素
  * 比如
@@ -10,7 +8,7 @@ import com.xsn.tiktok.strategy.StrategyRegister;
  * 自身条件的限制
  * 等等
  */
-public interface Limitation extends StrategyRegister {
+public interface Limitation {
 
     /**
      * 是否超出了限制

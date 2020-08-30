@@ -41,33 +41,4 @@ public class TimeLimitation implements Limitation, Time {
 
         return true;
     }
-
-
-    @Override
-    public void addStrategy(Strategy strategy) {
-        if (this.strategy == null) {
-            synchronized (STRATEGY_MUTEX) {
-                if (this.strategy == null && strategy != null) {
-                    strategy.changeLimitation(this);
-                    this.strategy = strategy;
-                } else {
-                    log.warn("already has a strategy");
-                }
-            }
-        } else {
-            log.warn("already has a strategy");
-        }
-    }
-
-    @Override
-    public void removeStrategy(Strategy strategy) {
-        if (this.strategy != null) {
-            synchronized (STRATEGY_MUTEX) {
-                if (this.strategy != null && strategy != null) {
-                    strategy.removeLimitation(this);
-                    this.strategy = null;
-                }
-            }
-        }
-    }
 }
